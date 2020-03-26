@@ -22,16 +22,18 @@ allData = loadCovidData(baseURL + "time_series_covid19_confirmed_global.csv", "C
 popData = pd.read_csv("population.csv")
 popData['pop2020'] = popData['pop2020'].apply(lambda x : x/1000)
 
-countries = ['Italy', 'Spain', 'United Kingdom', 'France', 'Netherlands','Greece']
-colors = ['blue',  'green', 'purple', 'orange', 'red', 'black']
+countries = ['Italy', 'Spain', 'United Kingdom', 'France', 'Greece']
+colors = ['blue',  'green', 'purple', 'orange', 'black']
 
 tmpData = allData[allData['Country/Region'].isin(countries)].loc[allData['Country/Region'] == allData['Province/State']]
 startDate = tmpData.loc[tmpData['CumCases'] != 0].iloc[0,:]['Date'] - timedelta(days=1)
+endDate = pd.to_datetime(tmpData.iloc[-1]['Date'])
 print(startDate)
 
 
-fig, (ax1, ax2) = plt.subplots(nrows=1,ncols=2, sharex=True)
+fig, (ax1, ax2) = plt.subplots(nrows=1,ncols=2, sharex=True, facecolor='lightgray')
 
+ax1.set_yscale('log')
 for country, col in zip(countries, colors):
   # Get country's population.
   population = popData.loc[popData['name'] == country,'pop2020'].to_numpy()[0] 
@@ -46,11 +48,23 @@ for country, col in zip(countries, colors):
 
   # Plot the data.
   c_df.plot(ax=ax1, kind='line', x='Date', y='CasesPerMillion', color=col, label=country + "(Cases)", logy=True, legend=True, grid=True)
-  c_df.plot(ax=ax1, kind='line', linestyle='--', x='Date', y='DeathsPerMillion', color=col, label=country + "(Deaths)", logy=True, legend=True, grid=True)
+  c_df.plot(ax=ax1, kind='line', linestyle='dotted', x='Date', y='DeathsPerMillion', color=col, label=country + "(Deaths)", logy=True, legend=True, grid=True)
   c_df.plot(ax=ax2, kind='line', x='Date', y='CasesGrowthR', yticks=range(0, 600, 20), color=col, label=country, legend=True, grid=True)
+
+xrange = pd.date_range(start=startDate, end=endDate)
+tmpdf = pd.DataFrame({'x':xrange, '1.2y':[1.2**i for i in np.arange(len(xrange))], '1.1y':[1.1**i for i in np.arange(len(xrange))]})
+tmpdf.plot(ax=ax1, kind='line', linestyle='dashed', x='x', y='1.2y', color='lightgrey', grid=True, label='')
+tmpdf.plot(ax=ax1, kind='line', linestyle='dashdot', x='x', y='1.1y', color='lightgrey', grid=True, label='')
+
+style = dict(size=10, color='gray')
+med = xrange[int(len(xrange)/2)]
+ax1.text(med, tmpdf[tmpdf['x'] == med]['1.1y']  , "$1.1^n$", **style)
+ax1.text(med, tmpdf[tmpdf['x'] == med]['1.2y']  , "$1.2^n$", **style)
 
 ax1.set_ylabel("# of Confirmed Incidents Per Million Inhabitants")
 ax2.set_ylabel("Cases Growth Rate (%)")
 
+ax1.legend(frameon=False)
+ax2.legend(frameon=False)
 # plt.tight_layout()
 plt.show()
