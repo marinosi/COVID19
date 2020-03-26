@@ -37,7 +37,7 @@ for country, col in zip(countries, colors):
   population = popData.loc[popData['name'] == country,'pop2020'].to_numpy()[0] 
 
   c_df = allData.loc[(allData['Country/Region'] == country) &
-                    (allData['Province/State'] == country) & (allData['Date'] >= startDate)].copy()
+                    (allData['Province/State'] == country) & (allData['Date'] >= startDate)].drop('Province/State', axis=1).copy()
   c_df['CasesGrowthR'] = c_df['CumCases'].pct_change(periods=1)*100
   c_df['CasesGrowthR'].fillna(0.0, inplace=True)
   c_df['CasesPerMillion'] = c_df['CumCases']/population
