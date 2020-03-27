@@ -20,7 +20,7 @@ allData = loadCovidData(baseURL + "time_series_covid19_confirmed_global.csv", "C
 
 # Load population data, and adjust values to correspond to millions instead of thousands.
 popData = pd.read_csv("population.csv")
-popData['pop2020'] = popData['pop2020'].apply(lambda x : x/1000)
+popData['pop2020'] = popData['pop2020'] / 1000
 
 countries = ['Italy', 'Spain', 'United Kingdom', 'France', 'Greece', 'US']
 colors = ['blue',  'green', 'purple', 'orange', 'black', 'lightcoral']
