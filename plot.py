@@ -22,8 +22,8 @@ allData = loadCovidData(baseURL + "time_series_covid19_confirmed_global.csv", "C
 popData = pd.read_csv("population.csv")
 popData['pop2020'] = popData['pop2020'] / 1000
 
-countries = ['Italy', 'Spain', 'United Kingdom', 'France', 'Greece', 'US']
-colors = ['blue',  'green', 'purple', 'orange', 'black', 'lightcoral']
+countries = ['Italy', 'Spain', 'United Kingdom', 'France', 'Greece', 'US', 'Germany']
+colors = ['blue',  'green', 'purple', 'orange', 'black', 'lightcoral', 'olive']
 
 tmpData = allData[allData['Country/Region'].isin(countries)].loc[allData['Country/Region'] == allData['Province/State']]
 startDate = tmpData.loc[tmpData['CumCases'] != 0].iloc[0,:]['Date'] - timedelta(days=1)
@@ -31,7 +31,7 @@ endDate = pd.to_datetime(tmpData.iloc[-1]['Date'])
 print(startDate)
 
 
-fig, (ax1, ax2, ax3) = plt.subplots(nrows=3,ncols=1, sharex=True, facecolor='lightgray', figsize=(15,20))
+fig, (ax1, ax2, ax3) = plt.subplots(nrows=3,ncols=1, facecolor='lightgray', figsize=(15,20))
 
 for country, col in zip(countries, colors):
   # Get country's population.
