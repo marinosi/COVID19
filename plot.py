@@ -33,7 +33,6 @@ print(startDate)
 
 fig, (ax1, ax2, ax3) = plt.subplots(nrows=3,ncols=1, sharex=True, facecolor='lightgray', figsize=(15,20))
 
-ax1.set_yscale('log')
 for country, col in zip(countries, colors):
   # Get country's population.
   population = popData.loc[popData['name'] == country,'pop2020'].to_numpy()[0] 
